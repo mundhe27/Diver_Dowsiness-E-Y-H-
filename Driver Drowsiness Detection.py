@@ -7,7 +7,7 @@ import imutils
 import time
 import dlib
 import math
-from cv2 import cv2
+import cv2
 import numpy as np
 from EAR import eye_aspect_ratio
 from MAR import mouth_aspect_ratio
@@ -24,7 +24,7 @@ predictor = dlib.shape_predictor(
 # camera sensor to warm up
 print("[INFO] initializing camera...")
 
-vs = VideoStream(src=1).start()
+vs = VideoStream(src=0).start()
 # vs = VideoStream(usePiCamera=True).start() # Raspberry Pi
 time.sleep(2.0)
 
@@ -114,7 +114,7 @@ while True:
             # threshold, so reset the counter and alarm
         else:
             COUNTER = 0
-
+            
         mouth = shape[mStart:mEnd]
 
         mouthMAR = mouth_aspect_ratio(mouth)
@@ -124,7 +124,7 @@ while True:
         mouthHull = cv2.convexHull(mouth)
 
         cv2.drawContours(frame, [mouthHull], -1, (0, 255, 0), 1)
-        cv2.putText(frame, "MAR: {:.2f}".format(mar), (650, 20), 
+        cv2.putText(frame, "MAR: {:.2f}".format(mar), (650, 20),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
 
         # Draw text if mouth is open
@@ -201,7 +201,7 @@ while True:
         for p in image_points:
             cv2.circle(frame, (int(p[0]), int(p[1])), 3, (0, 0, 255), -1)
 
-        (head_tilt_degree, start_point, end_point, 
+        (head_tilt_degree, start_point, end_point,
             end_point_alt) = getHeadTiltAndCoords(size, image_points, frame_height)
 
         cv2.line(frame, start_point, end_point, (255, 0, 0), 2)
